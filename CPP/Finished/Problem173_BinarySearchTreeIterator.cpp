@@ -26,6 +26,9 @@ using namespace std;
 };
 
 class BSTIterator {
+//O(n) space
+//O(n) complexity in constructor
+//O(1) complexity in search
     Node* current;
 	Node* Head;
 public:
@@ -77,17 +80,87 @@ public:
     }
 };
 
+class BSTIterator_M{
+//O(1) space
+//O(h*h) complexity in constructor
+//O(1) in checking hasNext
+//O(h*h) complexity in next
+	TreeNode* current;
+public:
+	BSTIterator_M(TreeNode *root) {
+	//Go to the left most node
+	TreeNode* tmp;
+	current=root;
+	if(root==NULL){current=NULL;return;}
+	while(current->left)//reconnet at each level
+		{
+		 tmp=current->left;
+		 while(tmp->right and tmp->right!=current){tmp=tmp->right;}//find the right most node of the left branch
+		 if(tmp->right==current){cout<<"error"<<endl;exit(1);}
+		 else
+			{tmp->right=current;
+			 current=current->left;
+		//	 cout<<"reconnect"<<tmp->val<<" "<<tmp->right<<endl;
+			}
+		}
+	//cout<<current->val<<" and right="<<current->right<<endl;exit(1);
+	//now current is the left most node
+    }
+
+	/** @return whether we have a next smallest number */
+    //O(1)
+    bool hasNext() {
+        return current!=NULL;
+    }
+
+	/** @return the next smallest number */
+    //O(1)
+    int next() {
+		int result=current->val;
+		TreeNode* tmp;
+		//go to the next smallest number
+		//check if current is the right-most node of current->right's left branch
+		tmp=current->right;
+		if(tmp==NULL){current=NULL;}//end
+		else
+			{tmp=tmp->left;//left branch
+			 while(tmp and tmp!=current){tmp=tmp->right;}
+			 if(tmp==current)//yes needs to relink
+				{tmp=current->right;
+				 current->right=NULL;
+				 current=tmp;
+				}
+			 else//no need to relink
+				{
+				 current=current->right;
+				 //go to the left most node of the current branch
+				 TreeNode* tmp;
+				 while(current->left)
+					{tmp=current->left;
+					 while(tmp->right and tmp->right!=current){tmp=tmp->right;}//find the right most node of the left branch
+					 if(tmp->right==current){cout<<"error"<<endl;exit(1);}
+					 else
+            			{tmp->right=current;
+             			 current=current->left;
+            			}
+					}
+				}
+		}
+		return result;
+    }
+};
+
 int main()
 {TreeNode* top=new TreeNode(4);
  top->left=new TreeNode(2);
  top->left->left=new TreeNode(1);
  top->left->right=new TreeNode(3);
- //top->right=new TreeNode(6);
- //top->right->left=new TreeNode(5);
- //top->right->right=new TreeNode(7);
- //top=NULL;
+ top->right=new TreeNode(6);
+ top->right->left=new TreeNode(5);
+ top->right->right=new TreeNode(7);
+ top=NULL;
  BSTIterator i = BSTIterator(top);
- while (i.hasNext()) cout << i.next();
+ while (i.hasNext()) cout << i.next()<<endl;
 }
 
 
