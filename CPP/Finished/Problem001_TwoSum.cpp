@@ -11,9 +11,10 @@ Output: index1=1, index2=2
 #include<iostream>
 #include<vector>
 #include<map>
-#include<tr1/unordered_map>
+//#include<tr1/unordered_map>
+#include<unordered_map>
 using namespace std;
-using namespace std::tr1;
+//using namespace std::tr1;
 
 class Solution {
 public:
